@@ -49,7 +49,6 @@ echo -n root123 | base64
 
 ![Base64](Base64.png)
 
-Expected output:
 
 
 

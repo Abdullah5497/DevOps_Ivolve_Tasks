@@ -71,7 +71,7 @@ vim mysql-secret.yaml
 kubectl apply -f mysql-secret.yaml
 ```
 
-![Apply Secret](Apply_Secret.png)
+
 
 ---
 

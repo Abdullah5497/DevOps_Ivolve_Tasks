@@ -21,7 +21,7 @@ The objective of this lab is to manage application configuration and sensitive d
 * **Container Runtime:** containerd
 * **Namespace:** ivolve
 
----
+--
 
 ## Steps
 

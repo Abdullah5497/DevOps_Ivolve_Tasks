@@ -17,7 +17,7 @@ The objective of this lab is to manage application configuration and sensitive d
 
 * **Kubernetes Cluster:** Minikube
 * **Number of Nodes:** 2
-* **Kubernetes Version:** v1.34.0
+* **Kubernetes Version:** v1.35.0
 * **Container Runtime:** containerd
 * **Namespace:** ivolve
 
@@ -32,26 +32,12 @@ A ConfigMap was created to store non-sensitive MySQL configuration values.
 vim mysql-configmap.yaml
 ```
 
-Content of `mysql-configmap.yaml`:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mysql-config
-  namespace: ivolve
-data:
-  DB_HOST: "mysql-service.ivolve.svc.cluster.local"
-  DB_USER: "ivolve-user"
-```
+![mysql-configmap](mysql-configmap.png)
 
 ```bash
 kubectl apply -f mysql-configmap.yaml
 ```
 
-![Apply ConfigMap](Apply_ConfigMap.png)
-
----
 
 ### Step 2: Encode Sensitive Data Using Base64
 Before creating the Secret, encode the sensitive values using base64:
@@ -61,15 +47,15 @@ echo -n ivolve123 | base64
 echo -n root123 | base64
 ```
 
+![Base64](Base64.png)
+
 Expected output:
 ```
 aXZvbHZlMTIz
 cm9vdDEyMw==
 ```
 
-![Base64 Encoding](Base64_Encode.png)
 
----
 
 ### Step 3: Create the Secret
 A Secret was created to store sensitive MySQL credentials securely using the base64 encoded values.
@@ -77,20 +63,9 @@ A Secret was created to store sensitive MySQL credentials securely using the bas
 ```bash
 vim mysql-secret.yaml
 ```
+![mysql-secret](mysql-secret.png)
 
-Content of `mysql-secret.yaml`:
 
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mysql-secret
-  namespace: ivolve
-type: Opaque
-data:
-  DB_PASSWORD: aXZvbHZlMTIz         # base64 of: ivolve123
-  MYSQL_ROOT_PASSWORD: cm9vdDEyMw==  # base64 of: root123
-```
 
 ```bash
 kubectl apply -f mysql-secret.yaml
@@ -108,7 +83,8 @@ kubectl get configmap -n ivolve
 kubectl get secrets -n ivolve
 ```
 
-![Get Resources](Get_Resources.png)
+![get_configmap](get_configmap.png)
+![get_secret](get_secret.png)
 
 ---
 
@@ -119,15 +95,7 @@ kubectl describe configmap mysql-config -n ivolve
 kubectl describe secret mysql-secret -n ivolve
 ```
 
-![Describe Resources](Describe_Resources.png)
+![describe_configmap](describe_configmap.png)
+![describe_secrets](describe_secrets.png)
 
----
 
-## Push to GitHub
-
-```bash
-cd DevOps_Ivolve_Tasks
-git add K8s/Lab_12/
-git commit -m "Add K8s Lab 12: Managing Configuration and Sensitive Data with ConfigMaps and Secrets"
-git push origin main
-```

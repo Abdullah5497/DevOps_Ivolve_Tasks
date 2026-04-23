@@ -128,7 +128,7 @@ kubectl get pvc -n ivolve
 Expected output:
 ```
 NAME           CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  
-app-logs-pv    1Gi        RWX            Retain           Bound    ivolve/app-logs-pvc    
+app-logs-pv    1Gi        RWX            Retain           Bound    default/app-logs-pvc    
 ```
 
 ```

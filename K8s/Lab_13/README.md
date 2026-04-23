@@ -3,16 +3,6 @@
 ## Objective
 The objective of this lab is to set up persistent storage for application logs using Persistent Volumes (PV) and Persistent Volume Claims (PVC) in Kubernetes.
 
----
-
-## Environment
-
-* **Kubernetes Cluster:** Minikube
-* **Kubernetes Version:** v1.34.0
-* **Container Runtime:** containerd
-* **Namespace:** ivolve
-
----
 
 ## Check That the Cluster is Running
 
@@ -20,7 +10,7 @@ The objective of this lab is to set up persistent storage for application logs u
 kubectl get nodes
 ```
 
-![Get Nodes](Get_Nodes.png)
+![GetNodes](GetNodes.png)
 
 ---
 
@@ -29,11 +19,6 @@ kubectl get nodes
 ### Step 1: Prepare Node Directory
 SSH into the worker node and create the directory that will be used as the hostPath for the PV:
 
-```bash
-minikube ssh -n minikube-m02
-```
-
-Inside the node run:
 
 ```bash
 sudo mkdir -p /mnt/app-logs
@@ -46,15 +31,8 @@ Expected output:
 drwxrwxrwx 2 root root 4096 ... /mnt/app-logs
 ```
 
-![Prepare Directory](Prepare_Dir.png)
+![Dir](Dir.png)
 
-Exit the node:
-
-```bash
-exit
-```
-
----
 
 ### Step 2: Create Persistent Volume (PV)
 
@@ -94,7 +72,7 @@ kubectl describe pv app-logs-pv
 
 Expected status: `Available`
 
-![PV Created](PV_Created.png)
+![PV](PV.png)
 
 ---
 
@@ -135,7 +113,7 @@ kubectl describe pvc app-logs-pvc -n ivolve
 
 Expected status: `Bound`
 
-![PVC Created](PVC_Created.png)
+![PVC](PVC.png)
 
 ---
 
@@ -158,15 +136,6 @@ NAME            STATUS   VOLUME         CAPACITY   ACCESS MODES
 app-logs-pvc    Bound    app-logs-pv    1Gi        RWX            
 ```
 
-![Final Verification](Final_Verification.png)
+![Final](Final.png)
 
----
 
-## Push to GitHub
-
-```bash
-cd DevOps_Ivolve_Tasks
-git add K8s/Lab_13/
-git commit -m "Add K8s Lab 13: Persistent Storage Setup for Application Logging"
-git push origin main
-```

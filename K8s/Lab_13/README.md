@@ -72,7 +72,7 @@ kubectl describe pv app-logs-pv
 
 Expected status: `Available`
 
-![PV](PV.png)
+![pv](pv.png)
 
 ---
 
@@ -113,7 +113,7 @@ kubectl describe pvc app-logs-pvc -n ivolve
 
 Expected status: `Bound`
 
-![PVC](PVC.png)
+![pvc](pvc.png)
 
 ---
 

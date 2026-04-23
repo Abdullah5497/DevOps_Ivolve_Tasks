@@ -70,11 +70,6 @@ kubectl get pv
 kubectl describe pv app-logs-pv
 ```
 
-Expected status: `Available`
-
-![pv](pv.png)
-
----
 
 ### Step 3: Create Persistent Volume Claim (PVC)
 
@@ -111,11 +106,7 @@ kubectl get pvc -n ivolve
 kubectl describe pvc app-logs-pvc -n ivolve
 ```
 
-Expected status: `Bound`
 
-![pvc](pvc.png)
-
----
 
 ### Final Verification
 Confirm the PV and PVC are bound to each other:

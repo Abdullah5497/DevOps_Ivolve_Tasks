@@ -7,15 +7,6 @@ Deploy a MySQL StatefulSet in Kubernetes with:
 - Toleration for a tainted `node=worker:NoSchedule`
 - Headless service for stable network identity
 
----
-
-## Environment
-
-* **Kubernetes Cluster:** Minikube
-* **Kubernetes Version:** v1.34.0
-* **Container Runtime:** containerd
-
----
 
 ## Requirements
 
@@ -41,9 +32,8 @@ Verify:
 kubectl get secret mysql-secret
 ```
 
-![Create Secret](Create_Secret.png)
 
----
+
 
 ### Step 2: Create Headless Service
 
@@ -70,9 +60,9 @@ kubectl apply -f mysql-headless-service.yaml
 kubectl get svc
 ```
 
-![Headless Service](Headless_Service.png)
 
----
+
+
 
 ### Step 3: Create StatefulSet
 
@@ -131,9 +121,7 @@ Apply:
 kubectl apply -f mysql-statefulset.yaml
 ```
 
-![Apply StatefulSet](Apply_StatefulSet.png)
 
----
 
 ### Step 4: Verify Resources
 
@@ -150,7 +138,7 @@ Expected:
 * PVC: `Bound`
 * Service: `ClusterIP=None`
 
-![Verify Resources](Verify_Resources.png)
+![Ver Resources](Ver_Resources.png)
 
 ---
 
@@ -184,15 +172,8 @@ Exit MySQL:
 EXIT;
 ```
 
-![MySQL Connected](MySQL_Connected.png)
+![MySQL](MySQL.png)
 
 ---
 
-## Push to GitHub
 
-```bash
-cd DevOps_Ivolve_Tasks
-git add K8s/Lab_14/
-git commit -m "Add K8s Lab 14: StatefulSet with Headless Service"
-git push origin main
-```

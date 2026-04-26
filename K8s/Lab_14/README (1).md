@@ -172,7 +172,7 @@ Exit MySQL:
 EXIT;
 ```
 
-![MySQL](MySQL.png)
+![MYSQL](MYSQL.png)
 
 ---
 

@@ -97,7 +97,8 @@ Access the application in your browser:
 http://localhost:3000
 ```
 
----
+![localhost](localhost.png)
+
 
 ## Step 6: Verify Health Endpoints
 
@@ -105,13 +106,16 @@ http://localhost:3000
 curl http://localhost:3000/health
 ```
 
+![localhealth](localhealth.png)
+
+
 ```bash
 curl http://localhost:3000/ready
 ```
 
-Expected responses confirm the app is connected to the database and ready to serve traffic.
+![localready](localready.png)
 
----
+
 
 ## Step 7: Verify Application Logs
 
@@ -119,9 +123,9 @@ Expected responses confirm the app is connected to the database and ready to ser
 docker exec -it myapp cat /app/logs/access.log
 ```
 
-This prints the access log from inside the running container, showing incoming HTTP requests.
+![exec](exec.png)
 
----
+
 
 ## Step 8: Push Image to DockerHub
 
@@ -134,76 +138,15 @@ docker login
 **Tag the image:**
 
 ```bash
-docker tag myapp fatmaahassan/kubernets-app:lab9
+docker tag myapp abdullahosama911/kubernets-app:lab9
 ```
 
 **Push the image:**
 
 ```bash
-docker push fatmaahassan/kubernets-app:lab9
+docker push abdullahosama911/kubernets-app:lab9
 ```
 
----
+![dockerhub](dockerhub.png)
 
-## 📸 Screenshots (Lab 9 Execution Result)
 
-> Add your screenshots here showing:
-> - `docker ps` output with both containers running
-> - Browser/curl output for `http://localhost:3000`
-> - `/health` and `/ready` endpoint responses
-> - Access log output from `/app/logs/access.log`
-> - DockerHub push confirmation
-
----
-
-## Architecture Overview
-
-```
-┌─────────────────────────────────────────────────────┐
-│                   Docker Network                     │
-│                                                      │
-│  ┌──────────────────┐      ┌──────────────────────┐  │
-│  │   app_service    │      │     db_service        │  │
-│  │   (Node.js)      │─────▶│     (MySQL 8.0)       │  │
-│  │   Port: 3000     │      │     Port: 3306        │  │
-│  └──────────────────┘      └──────────────────────┘  │
-│                                        │              │
-│                             ┌──────────▼───────────┐  │
-│                             │    db_data volume     │  │
-│                             │  /var/lib/mysql       │  │
-│                             └──────────────────────┘  │
-└─────────────────────────────────────────────────────┘
-```
-
----
-
-## Environment Variables Reference
-
-| Variable              | Service     | Value       | Description                     |
-|-----------------------|-------------|-------------|---------------------------------|
-| `DB_HOST`             | app_service | `mysql_db`  | Hostname of the MySQL container |
-| `DB_USER`             | app_service | `root`      | MySQL username                  |
-| `DB_PASSWORD`         | app_service | `root`      | MySQL password                  |
-| `MYSQL_ROOT_PASSWORD` | db_service  | `root`      | MySQL root password             |
-| `MYSQL_DATABASE`      | db_service  | `ivolve`    | Database to create on startup   |
-
----
-
-## Useful Commands
-
-```bash
-# View logs of the app container
-docker logs myapp
-
-# View logs of the MySQL container
-docker logs mysql_db
-
-# Stop and remove containers
-docker compose down
-
-# Stop and remove containers + volumes
-docker compose down -v
-
-# Rebuild without cache
-docker compose build --no-cache
-```

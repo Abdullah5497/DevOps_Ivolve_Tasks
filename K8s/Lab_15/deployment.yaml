@@ -1,0 +1,39 @@
+
+Copy
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      tolerations:
+        - key: node
+          operator: Equal
+          value: worker
+          effect: NoSchedule
+      containers:
+        - name: nodejs
+          image: fatmaahassan/kubernets-app:lab9
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: nodejs-config
+            - secretRef:
+                name: nodejs-secret
+          volumeMounts:
+            - name: nodejs-data
+              mountPath: /usr/src/app/data
+      volumes:
+        - name: nodejs-data
+          persistentVolumeClaim:
+            claimName: nodejs-pvc

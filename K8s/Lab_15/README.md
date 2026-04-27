@@ -131,7 +131,6 @@ kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 ```
 
-![Apply Resources](Apply_Resources.png)
 
 ---
 
@@ -145,7 +144,6 @@ kubectl get pods -w
 kubectl describe pod <pod-name>
 ```
 
-![Verify Pods](Verify_Pods.png)
 
 ---
 
@@ -156,50 +154,3 @@ kubectl get all
 kubectl get pvc
 ```
 
-Expected:
-* Pod: `nodejs-app-xxx` → `Running`
-* Deployment: `2/2`
-* Service: `nodejs-service` → `ClusterIP`
-* PVC: `nodejs-pvc` → `Bound`
-
-![Verify All](Verify_All.png)
-
----
-
-### Step 5: Check Application Logs
-
-```bash
-kubectl logs $(kubectl get pods | grep nodejs | awk '{print $1}' | head -1)
-```
-
-Expected:
-```
-✅ Connected to MySQL and 'ivolve' DB found.
-Server started on http://0.0.0.0:3000
-```
-
-![App Logs](App_Logs.png)
-
----
-
-### Step 6: Access the Application
-
-```bash
-kubectl port-forward svc/nodejs-service 8080:80
-```
-
-Open browser at `http://localhost:8080`
-
-![App Running](App_Running.png)
-
----
-
-## Push to GitHub
-
-```bash
-cd ~/DevOps_Ivolve_Tasks
-git add K8s/Lab_15/
-git commit -m "Add K8s Lab 15: Node.js Application Deployment with ClusterIP Service"
-git pull origin main --rebase
-git push origin main
-```

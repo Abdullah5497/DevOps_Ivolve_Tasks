@@ -164,6 +164,8 @@ GRANT ALL PRIVILEGES ON ivolve.*
 
 ---
 
+![mysql](mysql.png)
+
 ### Step 6: Verify Application
 
 Check deployment:
@@ -186,20 +188,4 @@ Expected:
 
 ---
 
-## Validation
-
-Confirm:
-
-- Database created successfully  
-- User created successfully  
-- Privileges granted  
-- Init Container completed  
-- Application started correctly  
-
----
-
-## Result
-
-The Node.js Deployment now uses an Init Container to automate database initialization before application startup.
-
-This ensures dependency readiness and removes manual database preparation steps.
+![pods](pods.png)

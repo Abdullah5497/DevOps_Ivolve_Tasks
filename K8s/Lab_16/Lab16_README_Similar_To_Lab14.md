@@ -74,12 +74,7 @@ initContainers:
   image: mysql:5.7
 ```
 
-Functions performed:
 
-- Wait for MySQL readiness
-- Create database
-- Create user
-- Grant privileges
 
 Apply:
 
@@ -132,37 +127,16 @@ Connect to MySQL:
 kubectl exec -it mysql-0 -- mysql -u root -p
 ```
 
-Password:
+Password:MyStrongPass123
 
 ```bash
-MyStrongPass123
-```
-
-Check database:
-
-```sql
 SHOW DATABASES;
-```
-
-Expected:
-
-```text
-ivolve
-```
-
-Verify privileges:
-
-```sql
 SHOW GRANTS FOR 'ivolve_user'@'%';
 ```
 
-Expected:
+Ensure ivolve exists Ensure ivolve_user exists with full privileges
 
-```sql
-GRANT ALL PRIVILEGES ON ivolve.*
-```
 
----
 
 ![mysql](mysql.png)
 
@@ -179,7 +153,6 @@ Check pods:
 ```bash
 kubectl get pods
 ```
-
 Expected:
 
 - Init container completed

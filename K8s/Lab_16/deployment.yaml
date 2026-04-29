@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: nodejs-app
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: nodejs
+
+  template:
+    metadata:
+      labels:
+        app: nodejs
+
+    spec:
+
+      initContainers:
+      - name: init-mysql
+        image: mysql:5.7
+
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for MySQL..."
+
+          until mysql -h $DB_HOST -u root -p$MYSQL_ROOT_PASSWORD \
+          -e "SELECT 1";
+          do
+            sleep 5
+          done
+
+          echo "Creating database and user..."
+
+          mysql -h $DB_HOST -u root -p$MYSQL_ROOT_PASSWORD <<EOF
+          CREATE DATABASE IF NOT EXISTS ivolve;
+
+          CREATE USER IF NOT EXISTS 'ivolve_user'@'%'
+          IDENTIFIED BY 'ivolve123';
+
+          GRANT ALL PRIVILEGES
+          ON ivolve.*
+          TO 'ivolve_user'@'%';
+
+          FLUSH PRIVILEGES;
+          EOF
+
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: nodejs-config
+              key: DB_HOST
+
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+
+
+      containers:
+      - name: nodejs
+        image: abdullahosama911/kubernets-app:lab9
+
+        volumeMounts:
+        - name: node-storage
+          mountPath: /usr/src/app/data
+
+      volumes:
+      - name: node-storage
+        persistentVolumeClaim:
+          claimName: nodejs-pvc

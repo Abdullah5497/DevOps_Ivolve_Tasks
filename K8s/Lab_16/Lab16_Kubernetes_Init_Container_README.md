@@ -1,263 +1,89 @@
-# Lab16 - Kubernetes Init Container for Pre-Deployment Database Setup
+Lab16 - Kubernetes Init Container for Pre-Deployment Database Setup
+##Objective
+In this lab, we will learn how to add an Init Container to a Node.js application on Kubernetes to perform a Database setup before the application runs:
 
-## 🎯 Objective
+Create the ivolve database
+Create the user ivolve_user and grant all privileges on the database
+Use ConfigMap and Secret for DB connection
+**Concepts Covered
+Init Container
+ConfigMap / Secret
+Persistent Volume Claim (PVC)
+Deployment update
+MySQL client container
+##Lab Overview
+The goal here:
 
-This lab demonstrates how to configure an Init Container inside a Kubernetes Deployment to perform database preparation before the application starts.
+1- Run the existing Node.js Deployment (from Lab15)
 
-The initialization process includes:
+2- Before the Pod starts:
 
-- Creating the `ivolve` database  
-- Creating the `ivolve_user` user  
-- Granting privileges on the database  
-- Using ConfigMap and Secret for database connection settings  
+The Init Container connects to MySQL
 
-The goal is to ensure the application starts only after MySQL is ready and the database has been prepared.
+Creates the database and user
 
----
+3- Node.js container starts only after Init Container finishes successfully
+##Components
+1️⃣ Init Container
+Image: mysql:5.7 (official Docker Hub image)
 
-## 📚 Concepts Covered
+Sets up the DB before Node.js container starts
 
-- Init Containers  
-- ConfigMaps  
-- Secrets  
-- Persistent Volume Claims (PVC)  
-- Kubernetes Deployment updates  
-- MySQL client container  
+Uses environment variables from Secret and ConfigMap
 
----
+2️⃣ Node.js Application Pod
+Starts only after the Init Container completes
 
-## 📝 Lab Overview
+Uses the PVC from Lab15 (nodejs-pvc)
 
-Deployment flow:
+Env vars from nodejs-config ConfigMap and nodejs-secret Secret
 
-### Step 1
-Run the existing Node.js application deployment from the previous lab.
+Image: abdullahosama911/kubernets-app:lab9
 
----
+3️⃣ Persistent Volume Claim
+Already created in Lab15
 
-### Step 2
-Before the application container starts:
+Mounted at /usr/src/app/data in the Pod
 
-The Init Container will:
+##Steps Followed in Lab16
+1️⃣ Update Deployment to Add Init Container
+File: K8s/Lab15/deployment.yaml
 
-- Connect to MySQL  
-- Wait until MySQL is reachable  
-- Create the `ivolve` database  
-- Create `ivolve_user`  
-- Grant privileges  
+Key changes:
 
----
+Added initContainers section with MySQL client image
 
-### Step 3
-After initialization succeeds:
+Connected to MySQL pod via DB_HOST
 
-- Init Container exits successfully  
-- Main Node.js container starts  
+Created ivolve database and ivolve_user
 
----
+Used mysql-secret for root password (MyStrongPass123)
 
-# 🏗 Components Used
-
-## 1️⃣ Init Container
-
-Container image:
-
-```yaml
-mysql:5.7
-```
-
-Purpose:
-
-- Prepares the database before app startup  
-- Uses MySQL client commands  
-- Reads environment variables from:
-
-  - ConfigMap  
-  - Secret
-
----
-
-## 2️⃣ Node.js Application Pod
-
-Container image:
-
-```yaml
-fatmaahassan/kubernets-app:lab9
-```
-
-Uses:
-
-- Existing Persistent Volume Claim:
-
-```yaml
-nodejs-pvc
-```
-
-Mounted path:
-
-```bash
-/usr/src/app/data
-```
-
-Starts only after Init Container finishes.
-
----
-
-## 3️⃣ Persistent Volume Claim
-
-PVC was created previously and reused in this lab.
-
----
-
-# ⚙️ Steps Followed
-
-## 1️⃣ Update Deployment with Init Container
-
-Edit:
-
-```bash
-K8s/Lab16/deployment.yaml
-```
-
-Add:
-
-- `initContainers` section  
-- MySQL client image  
-- DB initialization commands  
-- Secret reference for root password  
-
-Configuration includes:
-
-- DB Host via `DB_HOST`  
-- Root password from `mysql-secret`  
-- SQL commands for database and user creation
-
----
-
-## 2️⃣ Apply Updated Deployment
-
-```bash
-kubectl apply -f K8s/Lab16/deployment.yaml
-```
-
----
-
-## 3️⃣ Check Pod Status
-
-```bash
+2️⃣ Apply the Deployment
+kubectl apply -f K8s/Lab15/deployment.yaml
+3️⃣ Check Pod Status
 kubectl get pods
-```
-
-Expected lifecycle:
-
-```bash
-Init:0/1
-Init:Completed
-Running
-```
-
-The main container should not start before initialization completes.
-
----
-
-## 4️⃣ Inspect Init Container Logs
-
-```bash
-kubectl logs nodejs-app-86db786d44-g46jf -c init-mysql
-```
-
+Init Container will appear under the Init column
+Wait until it shows Completed, then Node.js container starts
+4️⃣ Inspect Init Container Logs
+kubectl logs nodejs-app-5858c489b4-9qmgs -c init-mysql
 Expected output:
 
-```text
 Waiting for MySQL...
 Creating database and user...
-```
-
----
-
-## 5️⃣ Verify Database Manually
-
-Connect to MySQL:
-
-```bash
+5️⃣ Verify Database Manually
 kubectl exec -it mysql-0 -- mysql -u root -p
-```
+Password: MyStrongPass123
 
-Password:
-
-```bash
-MyStrongPass123
-```
-
-Check databases:
-
-```sql
 SHOW DATABASES;
-```
-
-Check privileges:
-
-```sql
 SHOW GRANTS FOR 'ivolve_user'@'%';
-```
+Ensure ivolve exists Ensure ivolve_user exists with full privileges
+![mysql](mysql.png)
+Build
 
-Confirm:
-
-- `ivolve` exists  
-- `ivolve_user` exists  
-- User has expected privileges
-
----
-
-## 6️⃣ Verify Node.js Application
-
-Check pods:
-
-```bash
+6️⃣ Verify Node.js Application
 kubectl get pods
-```
-
-Check deployment:
-
-```bash
 kubectl get deployment
-```
+Build
+![pods](pods.png)
 
-Verify:
-
-- Init completed  
-- Pod is healthy  
-- Deployment available
-
----
-
-## 📂 Files Used
-
-```text
-K8s/Lab16/
-├── deployment.yaml
-├── configmap.yaml
-├── secret.yaml
-└── README.md
-```
-
----
-
-## ✅ Lab16 Complete
-
-Completed successfully:
-
-- Database created automatically  
-- User created automatically  
-- Privileges granted  
-- Init Container completed  
-- Node.js application started  
-- Manual validation performed
-
----
-
-## 🚀 Result
-
-The Kubernetes deployment now performs automatic database initialization during startup using an Init Container.
-
-This removes manual setup steps and ensures the application starts only when all prerequisites are ready.
